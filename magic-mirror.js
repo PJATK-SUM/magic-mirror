@@ -1,23 +1,21 @@
+Weather = new Mongo.Collection("weather");
+
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
+  Meteor.subscribe("weather");
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
-
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+  Template.body.helpers({
+    weathers: function () {
+      return Weather.find({}, {sort: {createdAt: -1}, limit: 1})
     }
   });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // code to run on server at startup
+    WeatherService.fetchWeather();
+    Meteor.setInterval(WeatherService.fetchWeather, 3600000);
+  });
+  Meteor.publish("weather", function () {
+    return Weather.find({});
   });
 }
