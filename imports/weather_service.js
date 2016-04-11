@@ -1,4 +1,7 @@
-WeatherService = {
+import { HTTP } from "meteor/http";
+import { Weather } from "./weather.js";
+
+export const WeatherService = {
   OWAPI_URL: "http://api.openweathermap.org/data/2.5/weather",
   ICON_MAPPING: {
     "01d": "wi-day-sunny",
