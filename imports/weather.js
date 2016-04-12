@@ -4,4 +4,4 @@ class WeatherCollection extends Mongo.Collection {
 
 };
 
-export const Weather = new WeatherCollection("Weather")
+export const Weather = new WeatherCollection("Weather");

@@ -12,9 +12,15 @@ html, body, .viewport {
   padding: 0;
 }
 
-.viewport {
+.header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -23,7 +29,6 @@ html, body, .viewport {
 
 .weather-widget {
   margin: 20px 40px;
-  flex-grow: 1;
   display: flex;
   align-items: center;
 }
@@ -43,4 +48,16 @@ html, body, .viewport {
 
 .weather-type .description {
   font-size: 0.9em;
+}
+
+.news-item {
+  width: 50%;
+  height: 50%;
+  padding: 20px;
+  box-sizing: border-box;
+  font-size: 0.8em;
+}
+
+.news-item p {
+  text-align: justify;
 }
