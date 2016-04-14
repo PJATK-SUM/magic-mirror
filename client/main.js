@@ -26,7 +26,7 @@ Template.body.helpers({
 Template.news.helpers({
   truncate: function (text) {
     if (text) {
-      return S(text).truncate(200);
+      return S(text).truncate(500);
     } else {
       return "";
     }

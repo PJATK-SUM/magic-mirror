@@ -40,7 +40,7 @@ export const WeatherService = {
     };
 
     HTTP.get(WeatherService.OWAPI_URL, params, function (error, result) {
-      if (error) {
+      if (error || !result.data) {
         console.log("Error fetching weather data");
       } else {
         let readings = result.data.weather;
