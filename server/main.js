@@ -9,13 +9,13 @@ Meteor.startup(() => {
   WeatherService.fetchWeather();
   Meteor.setInterval(WeatherService.fetchWeather, 3600000);
   Meteor.publish("Weather", function () {
-    return Weather.find({});
+    return Weather.find({}, { sort: { createdAt: -1 }, limit: 1});
   });
 
   // News service setup
   NewsService.fetchNews();
   Meteor.setInterval(NewsService.fetchNews, 3600000);
   Meteor.publish("News", function () {
-    return News.find({});
+    return News.find({}, { sort: { publishedAt: -1 }, limit: 4 });
   });
 });

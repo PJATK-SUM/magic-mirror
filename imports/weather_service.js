@@ -53,7 +53,7 @@ export const WeatherService = {
 
           Weather.insert({
             icon: WeatherService.ICON_MAPPING[icon],
-            temperature: main.temp,
+            temperature: Math.round(main.temp),
             pressure: main.pressure,
             humidity: main.humidity,
             description: WeatherService.DESCRIPTION_MAPPING[description],
