@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{resources}}/css/main.css">
+<link rel="stylesheet" type="text/css" href="{{resources}}/css/weather-icons.css">
+</head>
+<body>
+  <div class="viewport">
+    <div class="header">
+      <img class="logo" src="{{resources}}/images/logo.png" alt="Logo PJATK" width="350" height="108" />
+      <div class="weather-widget">
+		<div class="temperature">
+		  {{temperature}}&deg;C
+		</div>
+		<div class="weather-type">
+		  <div class="icon">
+			<i class="wi {{icon_class}}"></i>
+		  </div>
+		  <div class="description">
+			{{description}}
+		  </div>
+		</div>
+	  </div>
+    </div>
+    <div class="main">
+		<div class="news-new-row">
+		{% for item in news %}
+      		<div class="news-item">
+				<h2>{{item.title}}</h2>
+				<h3>{{item.date}}</h3>
+				<p>{{item.content}}</p>
+	  		</div>
+			{% if((loop.index % 2) == 0) and not loop.last %}
+				</div>
+				<div class="news-new-row">
+			{% endif %}
+		{% endfor %}
+		</div>
+    </div>
+  </div>
+</body>
+</html>
