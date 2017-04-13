@@ -54,9 +54,9 @@ def renderSchedule(_for):
 		time.sleep(2)  # give kittens more time to display :D
 
 	if(schData == None or len(schData) == 0):
-		screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
-	else:
 		screen.invoke_in_main_thread(screen.display, 'error.html', context)
+	else:
+		screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
 
 	time.sleep(5)
 
