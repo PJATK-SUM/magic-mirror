@@ -45,12 +45,18 @@ def renderSchedule(_for):
 	start_time = time.time()
 
 	context = {}
-	context.update({'schedule_data': schedule.requestSchedule(_for), 'fill_zero': lambda x: ("%02d" % x)})
+
+	schData = schedule.requestSchedule(_for)
+
+	context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
 
 	if (time.time() - start_time) < 2:
-		time.sleep(2) # give kittens more time to display :D
+		time.sleep(2)  # give kittens more time to display :D
 
-	screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
+	if(schData == None or len(schData) == 0):
+		screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
+	else:
+		screen.invoke_in_main_thread(screen.display, 'error.html', context)
 
 	time.sleep(5)
 

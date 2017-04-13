@@ -15,7 +15,12 @@ class Schedule:
 	SCHAPI_URL = "http://api.knopers.com.pl/test/data2.json?mid=%d"
 
 	def __init__(self):
-		logging.basicConfig(filename='schedule.log', level=logging.DEBUG)
+		self.logger = logging.getLogger('Mirror.Schedule')
+		hdlr = logging.FileHandler('schedule.log')
+		formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+		hdlr.setFormatter(formatter)
+		self.logger.addHandler(hdlr)
+		self.logger.setLevel(logging.WARNING)
 		pass
 
 	def setCredentials(self, login, password):
@@ -40,19 +45,19 @@ class Schedule:
 			if resp.getcode() == 200:
 				response = resp.read()
 			else:
-				logging.debug("[MifareUID: %d] HTTP return code %d \n%s" % (mid, resp.getcode(), resp.info()))
+				self.logger.debug("[MifareUID: %d] HTTP return code %d \n%s" % (mid, resp.getcode(), resp.info()))
 				return []
 			# 400 - not found or processing error or something else went wrong
 		except urllib2.URLError as e:
 			# Where is the internet connection?
-			logging.debug("[MifareUID: %d] Except on connection \n%s" % (mid, e))
+			self.logger.debug("[MifareUID: %d] Except on connection \n%s" % (mid, e))
 			return []
 
 		scheduleObj = []
 		try:
 			scheduleObj = json.loads(response)
 		except:
-			logging.debug("[MifareUID: %d] Except on Parse \n%s" % (mid, response))
+			self.logger.debug("[MifareUID: %d] Except on Parse \n%s" % (mid, response))
 
 		ret = []
 		for event in scheduleObj:
@@ -84,11 +89,13 @@ class Schedule:
 				ev["title"] = event["Nazwa"]
 			else:
 				ev["title"] = event["Kod"]
+			ev["room"] = event["NazwaSali"]
+
 			ret.append(ev)
 
 		if(len(ret) < 1):
-			logging.debug("[MifareUID: %d] Return empty schedule" % (mid,))
+			self.logger.debug("[MifareUID: %d] Return empty schedule" % (mid,))
 		else:
-			logging.debug("[MifareUID: %d] Probably successfully" % (mid,))
+			self.logger.debug("[MifareUID: %d] Probably successfully" % (mid,))
 
 		return ret

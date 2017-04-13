@@ -34,7 +34,10 @@
 								left: {{ 100 / cla.inrow * cla.margin }}%">
 						<a>
 							<span class="event-date">{{ cla.start.h }}:{{ fill_zero(cla.start.m) }} - {{ cla.end.h }}:{{ fill_zero(cla.end.m) }}</span>
-							<em class="event-name">{{ cla.title }}</em>
+							<em class="event-name">
+								{{ cla.title }}
+								<br />Sala: {{ cla.room }}
+							</em>
 						</a>
 					</li>
 					{% endfor %}

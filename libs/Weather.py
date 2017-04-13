@@ -57,7 +57,7 @@ class Weather:
 		response = urllib2.urlopen(url).read()
 		weatherObj = json.loads(response)
 		ret = {
-			'temperature': weatherObj['main']['temp'],
+			'temperature': int(weatherObj['main']['temp']),
 			'icon_class': Weather.ICON_MAPPING[weatherObj['weather'][0]['icon']],
 			'description': Weather.DESCRIPTION_MAPPING.get(weatherObj['weather'][0]['description'], "Zmiennie"),
 		}
@@ -81,7 +81,7 @@ class Weather:
 		try:
 			last = WeatherModel.select().order_by(-WeatherModel.time).limit(1).get()
 			ret = {
-				'temperature': last.temperature,
+				'temperature': int(last.temperature),
 				'icon_class': last.icon_class,
 				'description': last.description
 			}

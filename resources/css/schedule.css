@@ -237,18 +237,16 @@ a {
 }
 
 .cd-schedule .event-name {
-  font-size: 2.4rem;
-    font-size: 2rem;
+  font-size: 1.5em;
 }
 
 .cd-schedule .event-date {
-  font-size: 1.4rem;
-  opacity: .7;
+  font-size: 1.4em;
   line-height: 1.2;
   margin-bottom: .2em;
 }
 
 .cd-schedule .single-event,
 .cd-schedule .header-bg {
-  background: #78909c;
+  background: #78909C;
 }
