@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{resources}}/css/schedule.css">
+	{% set first_hour = 7 %}
+	{% set last_hour = 21 %}
+</head>
+<body>
+<div class="header">
+	<img class="logo" src="{{resources}}/images/logo.png" alt="Logo PJATK" width="350" height="108" />
+</div>
+<div class="cd-schedule">
+	<div class="timeline">
+		<ul>
+			{% for i in range(first_hour, last_hour + 1) %}
+				<li><span>{{ i }}:00</span></li>
+				{% if not loop.last %}
+					<li><span>{{ i }}:30</span></li>
+				{% endif %}
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="events">
+		<ul style="height: {{ (last_hour - first_hour) * 80 }}px;">
+			<li class="events-group">
+				<ul>
+					{% for cla in schedule_data %}
+					<li class="single-event"
+						style="top: {{ (39.99 * ((cla.start.h - first_hour)  * 60 + cla.start.m)) / 30 }}px;
+								height: {{ cla.delta * 4 / 3 }}px;
+								width: {{ 100 / cla.inrow }}%;
+								left: {{ 100 / cla.inrow * cla.margin }}%">
+						<a>
+							<span class="event-date">{{ cla.start.h }}:{{ fill_zero(cla.start.m) }} - {{ cla.end.h }}:{{ fill_zero(cla.end.m) }}</span>
+							<em class="event-name">
+								{{ cla.title }}
+								<br />Sala: {{ cla.room }}
+							</em>
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+</body>
+</html>
