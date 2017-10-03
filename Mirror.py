@@ -21,86 +21,90 @@ rfid = Rfid.Rfid()
 Database._db.close()
 timer = None
 
+
 def updater():
-	global weather, news, timer
+    global weather, news, timer
 
-	context = {}
+    context = {}
 
-	weather.requestWeather()
-	context.update(weather.get())
+    weather.requestWeather()
+    context.update(weather.get())
 
-	news.requestNews()
-	context.update({'news': news.get(4)})
+    news.requestNews()
+    context.update({'news': news.get(4)})
 
-	screen.invoke_in_main_thread(screen.display, 'main.html', context)
+    screen.invoke_in_main_thread(screen.display, 'main.html', context)
 
-	timer = Timer(6 * 60 * 60, updater, ())
-	timer.start()
+    timer = Timer(6 * 60 * 60, updater, ())
+    timer.start()
+
 
 def renderSchedule(_for):
-	global news, weather, schedule
-	context = {"random_cat": random.randint(1, 10)}
-	screen.invoke_in_main_thread(screen.display, 'loading.html', context)
+    global news, weather, schedule
+    context = {"random_cat": random.randint(1, 10)}
+    screen.invoke_in_main_thread(screen.display, 'loading.html', context)
 
-	start_time = time.time()
+    start_time = time.time()
 
-	context = {}
+    context = {}
 
-	schData = schedule.requestSchedule(_for)
+    schData = schedule.requestSchedule(_for)
 
-	context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
+    context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
 
-	if (time.time() - start_time) < 2:
-		time.sleep(2)  # give kittens more time to display :D
+    if (time.time() - start_time) < 2:
+        time.sleep(2)  # give kittens more time to display :D
 
-	if(schData == None or len(schData) == 0):
-		screen.invoke_in_main_thread(screen.display, 'error.html', context)
-	else:
-		screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
+    if (schData == None or len(schData) == 0):
+        screen.invoke_in_main_thread(screen.display, 'error.html', context)
+    else:
+        screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
 
-	time.sleep(5)
+    time.sleep(5)
 
-	context = {}
+    context = {}
 
-	context.update(weather.get())
-	context.update({'news': news.get(4)})
+    context.update(weather.get())
+    context.update({'news': news.get(4)})
 
-	screen.invoke_in_main_thread(screen.display, 'main.html', context)
+    screen.invoke_in_main_thread(screen.display, 'main.html', context)
+
 
 def reader():
-	global rfid
+    global rfid
 
-	rfid.scan(renderSchedule)
+    rfid.scan(renderSchedule)
+
 
 if __name__ == "__main__":
-	config.readfp(open('config.ini'))
+    config.readfp(open('config.ini'))
 
-	logger = logging.getLogger('peewee')
-	logger.setLevel(logging.ERROR)
+    logger = logging.getLogger('peewee')
+    logger.setLevel(logging.ERROR)
 
-	if config != None:
-		if config.has_option('Mirror', 'weather_api_key'):
-			Weather.Weather.OWAPI_KEY = config.get('Mirror', 'weather_api_key')
+    if config != None:
+        if config.has_option('Mirror', 'weather_api_key'):
+            Weather.Weather.OWAPI_KEY = config.get('Mirror', 'weather_api_key')
 
-		if config.has_option('Mirror', 'schedule_api_url'):
-			Schedule.Schedule.SCHAPI_URL = config.get('Mirror', 'schedule_api_url')
+        if config.has_option('Mirror', 'schedule_api_url'):
+            Schedule.Schedule.SCHAPI_URL = config.get('Mirror', 'schedule_api_url')
 
-		if config.has_option('Mirror', 'schedule_api_login') and config.has_option('Mirror', 'schedule_api_password'):
-			schedule.setCredentials(config.get('Mirror', 'schedule_api_login'), config.get('Mirror', 'schedule_api_password'))
+        if config.has_option('Mirror', 'schedule_api_login') and config.has_option('Mirror', 'schedule_api_password'):
+            schedule.setCredentials(config.get('Mirror', 'schedule_api_login'),
+                                    config.get('Mirror', 'schedule_api_password'))
 
+    app = Display.QtApp()
 
-	app = Display.QtApp()
-	
-	screen = Display.Screen()
-	screen.showFullScreen()
+    screen = Display.Screen()
+    screen.showFullScreen()
 
-	updater()
+    updater()
 
-	Thread(target=reader).start()
+    Thread(target=reader).start()
 
-	app.execute()
+    app.execute()
 
-	if timer:
-		timer.cancel()
+    if timer:
+        timer.cancel()
 
-	rfid.close()
+    rfid.close()

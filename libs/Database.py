@@ -7,5 +7,5 @@ _db = SqliteExtDatabase('saved_data.db')
 
 
 class BaseModel(Model):
-	class Meta:
-		database = _db
+    class Meta:
+        database = _db
