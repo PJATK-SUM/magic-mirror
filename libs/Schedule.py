@@ -47,12 +47,12 @@ class Schedule:
                 response = resp.read()
             else:
                 self.logger.debug("[MifareUID: %d] HTTP return code %d \n%s" % (mid, resp.getcode(), resp.info()))
-                return []
+                return None
             # 400 - not found or processing error or something else went wrong
         except urllib2.URLError as e:
             # Where is the internet connection?
             self.logger.debug("[MifareUID: %d] Except on connection \n%s" % (mid, e))
-            return []
+            return None
 
         scheduleObj = []
         try:

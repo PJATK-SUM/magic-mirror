@@ -5,7 +5,7 @@ from libs import Display
 from libs import Weather
 from libs import News
 from libs import Schedule
-from libs import Rfid
+from libs.Rfid import Rfid
 from libs import Database
 import random
 import time
@@ -17,7 +17,7 @@ config = ConfigParser()
 weather = Weather.Weather()
 news = News.News()
 schedule = Schedule.Schedule()
-rfid = Rfid.Rfid()
+rfid = Rfid()
 Database._db.close()
 timer = None
 
@@ -48,14 +48,16 @@ def renderSchedule(_for):
 
     context = {}
 
-    schData = schedule.requestSchedule(_for)
+    schData = schedule.requestSchedule(Rfid.mifareDataToInt(_for))
+    if (schData == None):
+        schData = schedule.requestSchedule(Rfid.reversedMifareDataToInt(_for))
 
     context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
 
     if (time.time() - start_time) < 2:
         time.sleep(2)  # give kittens more time to display :D
 
-    if (schData == None or len(schData) == 0):
+    if (schData == None):
         screen.invoke_in_main_thread(screen.display, 'error.html', context)
     else:
         screen.invoke_in_main_thread(screen.display, 'schedule.html', context)

@@ -3,6 +3,8 @@ import struct
 import time
 from pirc522 import RFID
 
+def hex2str(bytes):
+    return ''.join('{:02x}'.format(x) for x in bytes)
 
 class Rfid():
     def __init__(self):
@@ -20,10 +22,9 @@ class Rfid():
 
                 (error, uid) = self.rdr.anticoll()
                 if not error:
-                    mifareUID = Rfid.mifareDataToInt(uid)
-                    callback(mifareUID)
+                    callback(uid)
                     if __debug__:
-                        print("Mifare: %d" % (mifareUID))
+                        print("Mifare: %d" % (hex2str(uid)))
             time.sleep(1)
 
     def close(self):
@@ -33,3 +34,7 @@ class Rfid():
     @staticmethod
     def mifareDataToInt(data):
         return struct.unpack("I", bytearray(data[:4]))[0]
+
+    @staticmethod
+    def reversedMifareDataToInt(data):
+        return struct.unpack("I", bytearray(reversed(data[:4])))[0]
