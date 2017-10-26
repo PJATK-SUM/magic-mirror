@@ -5,8 +5,9 @@ from libs import Display
 from libs import Weather
 from libs import News
 from libs import Schedule
-from libs.Rfid import Rfid
+from libs.Rfid import Rfid, hex2str
 from libs import Database
+import peewee
 import random
 import time
 from threading import Timer, Thread
@@ -48,9 +49,21 @@ def renderSchedule(_for):
 
     context = {}
 
+    type = "LE"
     schData = schedule.requestSchedule(Rfid.mifareDataToInt(_for))
-    if (schData == None):
+    if (not schData or schData == None):
+        type = "BE"
         schData = schedule.requestSchedule(Rfid.reversedMifareDataToInt(_for))
+
+    if (not schData or schData == None):
+        type = "NULL"
+
+    try:
+        Database.StatsModel.create(mifare=hex2str(_for), type=type)
+    except peewee.IntegrityError:
+        pass
+    except peewee.OperationalError:
+        pass
 
     context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
 
@@ -83,6 +96,8 @@ if __name__ == "__main__":
 
     logger = logging.getLogger('peewee')
     logger.setLevel(logging.ERROR)
+
+    Database.StatsModel.create_table(fail_silently=True)
 
     if config != None:
         if config.has_option('Mirror', 'weather_api_key'):
