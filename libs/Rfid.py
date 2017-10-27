@@ -24,7 +24,7 @@ class Rfid():
                 if not error:
                     callback(uid)
                     if __debug__:
-                        print("Mifare: %d" % (hex2str(uid)))
+                        print("Mifare: %s" % (hex2str(uid)))
             time.sleep(1)
 
     def close(self):
