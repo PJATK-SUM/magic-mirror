@@ -66,7 +66,9 @@ class Screen(QtGui.QMainWindow):
     def display(self, template, context):
         tpl = self.env.get_template(template)
         context['resources'] = self._resUrl
-        self.web_app.setHtml(tpl.render(**context))
+        html = tpl.render(**context)
+        print html
+        self.web_app.setHtml(html)
 
     def invoke_in_main_thread(self, fn, *args, **kwargs):
         QtCore.QCoreApplication.postEvent(self._invoker, InvokeEvent(fn, *args, **kwargs))

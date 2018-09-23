@@ -2,7 +2,7 @@
 import urllib2
 import json
 import logging
-from datetime import date, datetime
+from datetime import date, time, datetime
 
 try:
     from ntlm import HTTPNtlmAuthHandler
@@ -61,16 +61,20 @@ class Schedule:
             self.logger.debug("[MifareUID: %d] Except on Parse \n%s" % (mid, response))
 
         ret = []
+        today = date.today()
+        now = datetime.now().time()
         for event in scheduleObj:
             ev = {}
             start = event["DataRoz"].split(" ")
-            if datetime.strptime(start[0], "%Y-%m-%d").date() != date.today():
+            if datetime.strptime(start[0], "%Y-%m-%d").date() != today:
                 continue
 
             end = event["DataZak"].split(" ")
             stime = start[1].split(":")
             etime = end[1].split(":")
 
+            ev["current"] = datetime.strptime(start[1], "%H:%M").time() <= now <= datetime.strptime(end[1], "%H:%M").time()
+            print start[1], "<=", str(now), "<=", end[1]
             ev["date"] = start[0]
             ev["start"] = {'h': int(stime[0]), 'm': int(stime[1])}
             ev["end"] = {'h': int(etime[0]), 'm': int(etime[1])}

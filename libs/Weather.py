@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import urllib2
 import json
-import Database
 from peewee import *
 import datetime
+import Database
 
 
 class WeatherModel(Database.BaseModel):

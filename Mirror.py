@@ -10,6 +10,7 @@ from libs import Database
 import peewee
 import random
 import time
+import datetime
 from threading import Timer, Thread
 from ConfigParser import ConfigParser
 
@@ -29,16 +30,20 @@ def updater():
     context = {}
 
     weather.requestWeather()
-    context.update(weather.get())
-
     news.requestNews()
-    context.update({'news': news.get(4)})
 
-    screen.invoke_in_main_thread(screen.display, 'main.html', context)
+    renderHome()
 
     timer = Timer(6 * 60 * 60, updater, ())
     timer.start()
 
+def renderHome():
+    context = {}
+
+    context.update(weather.get())
+    context.update({'news': news.get(4)})
+
+    screen.invoke_in_main_thread(screen.display, 'main.html', context)
 
 def renderSchedule(_for):
     global news, weather, schedule
@@ -66,6 +71,8 @@ def renderSchedule(_for):
         pass
 
     context.update({'schedule_data': schData, 'fill_zero': lambda x: ("%02d" % x)})
+    now = datetime.datetime.now().strftime("%d.%m.%Y r. %H:%M")
+    context.update({ 'now': now })
 
     if (time.time() - start_time) < 2:
         time.sleep(2)  # give kittens more time to display :D
@@ -77,19 +84,12 @@ def renderSchedule(_for):
 
     time.sleep(5)
 
-    context = {}
-
-    context.update(weather.get())
-    context.update({'news': news.get(4)})
-
-    screen.invoke_in_main_thread(screen.display, 'main.html', context)
-
+    renderHome()
 
 def reader():
     global rfid
 
     rfid.scan(renderSchedule)
-
 
 if __name__ == "__main__":
     config.readfp(open('config.ini'))
