@@ -8,21 +8,13 @@ from libs import Schedule
 from libs.Rfid import Rfid, hex2str
 from libs import Database
 import peewee
-import random
-import time
-import datetime
+import random, os
+import time, datetime
 from threading import Timer, Thread
 from ConfigParser import ConfigParser
 
-config = ConfigParser()
-
-weather = Weather.Weather()
-news = News.News()
-schedule = Schedule.Schedule()
-rfid = Rfid()
-Database._db.close()
 timer = None
-
+layout = "mirror"
 
 def updater():
     global weather, news, timer
@@ -34,7 +26,7 @@ def updater():
 
     renderHome()
 
-    timer = Timer(6 * 60 * 60, updater, ())
+    timer = Timer(6 * 60 * 60, updater)
     timer.start()
 
 def renderHome():
@@ -43,12 +35,14 @@ def renderHome():
     context.update(weather.get())
     context.update({'news': news.get(4)})
 
-    screen.invoke_in_main_thread(screen.display, 'main.html', context)
+    screen.invoke_in_main_thread(screen.display, layout + '/main.html', context)
 
 def renderSchedule(_for):
     global news, weather, schedule
-    context = {"random_cat": random.randint(1, 10)}
-    screen.invoke_in_main_thread(screen.display, 'loading.html', context)
+    screen.display_icon(screen.icons[2])  # sync
+
+    context = {"random_cat": random.randint(1, 15)}
+    screen.invoke_in_main_thread(screen.display, layout + '/loading.html', context)
 
     start_time = time.time()
 
@@ -75,28 +69,40 @@ def renderSchedule(_for):
     context.update({ 'now': now })
 
     if (time.time() - start_time) < 2:
-        time.sleep(2)  # give kittens more time to display :D
+        time.sleep(time.time() - start_time)  # give kittens more time to display :D
 
     if (schData == None):
-        screen.invoke_in_main_thread(screen.display, 'error.html', context)
+        screen.invoke_in_main_thread(screen.display, layout + '/error.html', context)
     else:
-        screen.invoke_in_main_thread(screen.display, 'schedule.html', context)
+        screen.invoke_in_main_thread(screen.display, layout + '/schedule.html', context)
 
     time.sleep(5)
-
+    screen.hide_icon()
     renderHome()
 
 def reader():
     global rfid
-
     rfid.scan(renderSchedule)
 
 if __name__ == "__main__":
+    config = ConfigParser()
     config.readfp(open('config.ini'))
 
     logger = logging.getLogger('peewee')
     logger.setLevel(logging.ERROR)
 
+    app = Display.QtApp()
+
+    screen = Display.Screen()
+    screen.showFullScreen()
+    screen.load_icons()
+
+    weather = Weather.Weather()
+    news = News.News()
+    schedule = Schedule.Schedule(screen)
+    rfid = Rfid()
+
+    Database._db.close()
     Database.StatsModel.create_table(fail_silently=True)
 
     if config != None:
@@ -110,10 +116,10 @@ if __name__ == "__main__":
             schedule.setCredentials(config.get('Mirror', 'schedule_api_login'),
                                     config.get('Mirror', 'schedule_api_password'))
 
-    app = Display.QtApp()
-
-    screen = Display.Screen()
-    screen.showFullScreen()
+        if config.has_option('Mirror', 'mirror_layout'):
+            lay = config.get('Mirror', 'mirror_layout')
+            if os.path.isdir(os.path.join("templates/", layout)):
+                layout = lay
 
     updater()
 

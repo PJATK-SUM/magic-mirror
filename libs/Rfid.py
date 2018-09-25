@@ -16,10 +16,8 @@ class Rfid():
             print("Starting")
         while self.isRunning:
             (error, data) = self.rdr.request()
-
             if not error and __debug__:
                 print("\nDetected: " + format(data, "02x"))
-
                 (error, uid) = self.rdr.anticoll()
                 if not error:
                     callback(uid)
