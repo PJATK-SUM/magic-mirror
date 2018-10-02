@@ -45,7 +45,7 @@ if __name__ == "__main__":
     schedule = Schedule.Schedule(screen)
     schedule.setCredentials("", "")
 
-    main()
+    sch()
 
     app.execute()
 

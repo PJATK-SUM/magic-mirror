@@ -66,7 +66,6 @@ class Screen(QtGui.QMainWindow):
         self.icon.setBackgroundRole(QtGui.QPalette.Base)
         self.icon.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored)
         self.icon.setScaledContents(True)
-        self.icon.show()
 
         self.web_app.page().mainFrame().setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
         self.web_app.page().mainFrame().setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
@@ -91,6 +90,7 @@ class Screen(QtGui.QMainWindow):
         self.icon.setGeometry(self.web_app.width() - 58, self.web_app.height() - 58, 48, 48)
         self.icon.adjustSize()
         self.icon.repaint()
+        self.icon.show()
 
     def hide_icon(self):
         self.invoke_in_main_thread(self.icon.hide)

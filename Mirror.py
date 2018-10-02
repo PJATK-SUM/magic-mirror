@@ -14,6 +14,7 @@ from threading import Timer, Thread
 from ConfigParser import ConfigParser
 
 timer = None
+timerInfo = None
 layout = "mirror"
 
 def updater():
@@ -26,10 +27,11 @@ def updater():
 
     renderHome()
 
-    timer = Timer(6 * 60 * 60, updater)
+    timer = Timer(3 * 60 * 60, updater)
     timer.start()
 
 def renderHome():
+    global timerInfo
     context = {}
 
     context.update(weather.get())
@@ -37,9 +39,34 @@ def renderHome():
 
     screen.invoke_in_main_thread(screen.display, layout + '/main.html', context)
 
+    if timerInfo:
+        timerInfo.cancel()
+        timerInfo = None
+
+    timerInfo = Timer(60, renderInfo)
+    timerInfo.start()
+
+def renderInfo():
+    global timerInfo
+    context = {}
+
+    screen.invoke_in_main_thread(screen.display, layout + '/info.html', context)
+
+    if timerInfo:
+        timerInfo.cancel()
+        timerInfo = None
+
+    timerInfo = Timer(15, renderHome)
+    timerInfo.start()
+
+
 def renderSchedule(_for):
-    global news, weather, schedule
+    global news, weather, schedule, timerInfo
     screen.display_icon(screen.icons[2])  # sync
+
+    if timerInfo:
+        timerInfo.cancel()
+        timerInfo = None
 
     context = {"random_cat": random.randint(1, 15)}
     screen.invoke_in_main_thread(screen.display, layout + '/loading.html', context)

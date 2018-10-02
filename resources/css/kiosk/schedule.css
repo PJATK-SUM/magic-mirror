@@ -9,6 +9,7 @@ header:after, #timeline .timeline-item:after, header:before, #timeline .timeline
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
+    cursor: none;
 }
 
 body {
@@ -17,8 +18,6 @@ body {
     margin: 0;
     padding: 0;
     font-family: helvetica, arial, tahoma, verdana;
-    line-height: 20px;
-    font-size: 14px;
     color: #726f77;
 }
 
@@ -28,6 +27,8 @@ img {
 
 .header {
     position: absolute;
+    line-height: 20px;
+    font-size: 14px;
     left: 20px;
     top: 20px;
 }

@@ -11,9 +11,9 @@ except ImportError:
     print('Install it by: pip install python-ntlm')
     exit()
 
-
 class Schedule:
-    SCHAPI_URL = "http://api.knopers.com.pl/test/sample.php?mid=%d"
+    MOCK_URL = "http://api.knopers.com.pl/test/sample.php?mid=%d"
+    SCHAPI_URL = MOCK_URL
 
     def __init__(self, screen):
         self.logger = logging.getLogger('Mirror.Schedule')
@@ -34,6 +34,8 @@ class Schedule:
     def requestSchedule(self, mid):
         self.screen.display_icon(self.screen.icons[2])  # sync
         url = Schedule.SCHAPI_URL % mid
+        if mid == 3140962345:
+            url = Schedule.MOCK_URL
 
         passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, url, self.login, self.password)
