@@ -35,6 +35,10 @@ def loading():
     context = {"random_cat": random.randint(1, 15)}
     screen.invoke_in_main_thread(screen.display, layout + '/loading.html', context)
 
+def info():
+    context = {}
+    screen.invoke_in_main_thread(screen.display, layout + '/info.html', context)
+
 if __name__ == "__main__":
     app = Display.QtApp()
 
@@ -45,7 +49,7 @@ if __name__ == "__main__":
     schedule = Schedule.Schedule(screen)
     schedule.setCredentials("", "")
 
-    sch()
+    info()
 
     app.execute()
 
